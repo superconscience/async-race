@@ -1,23 +1,38 @@
 {
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "plugins": ["import", "@typescript-eslint"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "airbnb-base",
+    "airbnb-typescript/base"    
+  ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["prettier", "import", "@typescript-eslint"],
-  "extends": ["plugin:prettier/recommended", "prettier", "eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "parserOptions": {
     "ecmaVersion": 2020,
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": "./tsconfig.json"
   },
-  "env": {
-    "es6": true,
-    "browser": true,
-    "node": true
-  },
+  "ignorePatterns": ["node_modules/"],
   "rules": {
     "no-debugger": "off",
     "no-console": 0,
     "class-methods-use-this": "off",
     "@typescript-eslint/no-explicit-any": 2,
-    "no-empty-function": "off",
-    "@typescript-eslint/no-empty-function": "off",
-    "@typescript-eslint/no-var-requires": 0
+    "import/no-cycle": 0,
+    "@typescript-eslint/no-useless-constructor": 0,
+    "no-underscore-dangle": ["error", { "allowAfterThis": true }],
+    "no-param-reassign": ["error", { "props": false }],
+    "indent": ["warn", 2, {
+      "SwitchCase": 1
+    }],
+    "@typescript-eslint/indent": ["warn", 2, {
+      "SwitchCase": 1
+    }],
+    "function-paren-newline": "off",
+    "no-new": "off"
   }
 }
