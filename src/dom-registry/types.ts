@@ -5,6 +5,6 @@ export type DOMRegistry = {
   updateCarColorInput: HTMLInputElement | null;
   carList: HTMLElement | null;
   carListItems: Record<string, HTMLElement> | null;
-}
+};
 
 export type DOMRegistryKey = keyof DOMRegistry;

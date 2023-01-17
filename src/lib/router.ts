@@ -58,6 +58,9 @@ class Router {
 
       // Get params - all the rest
       this.params = pathParts;
+      if (this.params.length === 1 && this.params[0] === '') {
+        this.params = [];
+      }
     }
   }
 

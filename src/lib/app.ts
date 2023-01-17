@@ -31,16 +31,14 @@ class App {
 
   static async run(): Promise<void> {
     App.router = new Router();
-    App.controller = new MainController();
     App.store = new Store();
     App.apiClient = new ApiClient();
+    App.controller = new MainController();
 
     const method = App.router.getAction().toLowerCase();
 
     try {
       if (method === Actions.Garage) {
-        const cars = await App.apiClient.getCars();
-        App.store.cars.setCars(cars);
         App.controller.garage();
       } else if (method === Actions.Winners) {
         App.controller.winners();

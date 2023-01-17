@@ -4,7 +4,8 @@ import {
   $, createCar, isHTMLElementOfClass,
 } from '../utils/functions';
 import Button from './button';
-import GarageList from './garage-list';
+import Garage from './garage';
+import Loader from './loader';
 
 export type ConstructorMode = 'create' | 'update';
 
@@ -98,11 +99,13 @@ class ConstructorItem<T extends ConstructorMode = 'create'> implements Component
 
     const name = $nameInput.value.trim();
     const color = $colorInput.value;
-    const createdCar = await App.getApiClient().createCar(createCar(name, color));
-    const carsStore = App.getStore().cars;
+    Loader.on();
+    await App.getController().getCarModel().createCar(
+      createCar(name, color),
+      App.getController().getGarageView().getPage());
 
-    carsStore.addCar(createdCar);
     ConstructorItem.onCarCreate();
+    Loader.off();
   };
 
   private updateButtonClickHandler: EventListener = async (event) => {
@@ -122,18 +125,22 @@ class ConstructorItem<T extends ConstructorMode = 'create'> implements Component
     const carsStore = App.getStore().cars;
     const name = $nameInput.value.trim();
     const color = $colorInput.value;
-    const updatedCar = await App.getApiClient().updateCar(this.id, createCar(name, color));
+
+    Loader.on();
+    const updatedCar = await App.getController().getCarModel().updateCar(
+      this.id, createCar(name, color));
 
     carsStore.updateCar(this.id, updatedCar);
     ConstructorItem.onCarUpdate();
+    Loader.off();
   };
 
   static onCarCreate(): void {
-    GarageList.refresh();
+    Garage.refresh();
   }
 
   static onCarUpdate(): void {
-    GarageList.refresh();
+    Garage.refresh();
   }
 }
 

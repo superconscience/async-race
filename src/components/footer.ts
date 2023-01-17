@@ -1,5 +1,5 @@
-import { Component } from "../types";
-import { $ } from "../utils/functions";
+import { Component } from '../types';
+import { $ } from '../utils/functions';
 
 class Footer implements Component {
   $element: HTMLElement;

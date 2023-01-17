@@ -1,7 +1,9 @@
 import { v4 as uuid } from 'uuid';
 import { Car } from '../types';
 import { DatasetHelper } from './types';
-import { CAR_BRANDS, CAR_MODELS, MAX_HEX } from '../constants';
+import {
+  CAR_BRANDS, CAR_MODELS, GENERATE_CARS_COUNT, MAX_HEX,
+} from '../constants';
 
 export const capitalize = (value: string) => value.slice(0, 1).toUpperCase() + value.slice(1);
 
@@ -47,6 +49,9 @@ export const generateCarName = () => {
 };
 
 export const generateColor = () => `#${Math.floor(Math.random() * MAX_HEX).toString(16)}`;
+
+export const generateCars = () => Array(GENERATE_CARS_COUNT).fill(0).map(
+  () => createCar(generateCarName(), generateColor()));
 
 export const datasetHelper = (): DatasetHelper => ({
   set: <Dataset extends DOMStringMap>(

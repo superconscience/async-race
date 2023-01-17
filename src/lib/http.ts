@@ -1,12 +1,8 @@
 import { CreateCarRequestData } from '../types';
 
-export enum Endpoints {
-  Garage = 'garage',
-  Winners = 'winners',
-  Engine = 'engine',
-}
-
 export type HttpOptions<O extends keyof RequestInit = 'method'> = Omit<RequestInit, O | 'method'>;
+
+export type ResponseCallback = (response: Response) => void;
 
 class Http {
   private baseUrl: string;
@@ -15,11 +11,17 @@ class Http {
     this.baseUrl = baseUrl;
   }
 
-  get<T = unknown>(endpoint: string, options: HttpOptions = {}): Promise<T> {
+  get<T = unknown>(
+    endpoint: string,
+    options: HttpOptions = {},
+    callback?: ResponseCallback,
+  ): Promise<T> {
     return this.fetch(
       endpoint,
       options,
-    ).then((response) => response.json() as T);
+    )
+      .then((response) => { if (callback) callback(response); return response; })
+      .then((response) => response.json() as T);
   }
 
   async post<T = unknown>(endpoint: string, data: unknown, options: HttpOptions<'body'> = {}): Promise<T> | never {

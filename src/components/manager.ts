@@ -1,12 +1,13 @@
-import { GENERATE_CARS_COUNT } from '../constants';
 import App from '../lib/app';
-import { Cars, Component } from '../types';
+import { Component } from '../types';
 import {
-  $, createCar, generateCarName, generateColor, isHTMLButtonElementOfClass,
+  $,
+  isHTMLButtonElementOfClass,
 } from '../utils/functions';
 import Button from './button';
 import ConstructorPanel from './constructor-panel';
 import GarageList from './garage-list';
+import Loader from './loader';
 
 class Manager implements Component {
   $element: HTMLElement;
@@ -60,19 +61,13 @@ class Manager implements Component {
       return;
     }
 
-    const carsStore = App.getStore().cars;
-
-    await Promise.all(this.generateCars().map(async (car) => {
-      carsStore.addCar(await App.getApiClient().createCar(car));
-    }));
+    Loader.on();
+    await App.getController().getCarModel().generateCars(
+      App.getController().getGarageView().getPage());
 
     GarageList.refresh();
+    Loader.off();
   };
-
-  private generateCars(): Cars {
-    return Array(GENERATE_CARS_COUNT).fill(0).map(
-      () => createCar(generateCarName(), generateColor()));
-  }
 }
 
 export default Manager;

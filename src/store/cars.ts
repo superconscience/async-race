@@ -7,6 +7,8 @@ import { createCar } from '../utils/functions';
 class CarsStore {
   private _cars: Cars = [];
 
+  private totalCount = 0;
+
   get cars(): Cars {
     return this._cars;
   }
@@ -17,6 +19,14 @@ class CarsStore {
 
   get carsMap(): CarsMap {
     return Object.fromEntries(this.cars.map((car) => [car.id, car]));
+  }
+
+  getTotalCount() {
+    return this.totalCount;
+  }
+
+  setTotalCount(value: number) {
+    this.totalCount = value;
   }
 
   addCar(value: Car): void {

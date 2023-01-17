@@ -4,7 +4,8 @@ import ConstructorItem from './constructor-item';
 import Car from './car';
 import { CarId, Component } from '../types';
 import App from '../lib/app';
-import GarageList from './garage-list';
+import Garage from './garage';
+import Loader from './loader';
 
 class GarageItem implements Component {
   $element: HTMLDivElement;
@@ -128,9 +129,12 @@ class GarageItem implements Component {
       return;
     }
 
-    await App.getApiClient().deleteCar(this.id);
-    App.getStore().cars.deleteCar(this.id);
+    Loader.on();
+    await App.getController().getCarModel().deleteCar(
+      this.id, App.getController().getGarageView().getPage());
+
     GarageItem.onCarDelete();
+    Loader.off();
   };
 
   private showUpdateButtonClickHandler: EventListener = (event) => {
@@ -144,7 +148,7 @@ class GarageItem implements Component {
   };
 
   static onCarDelete() {
-    GarageList.refresh();
+    Garage.refresh();
   }
 }
 
