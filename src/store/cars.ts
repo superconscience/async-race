@@ -1,4 +1,4 @@
-import { GENERATE_CARS_COUNT } from '../constants';
+import { CARS_PER_PAGE, GENERATE_CARS_COUNT } from '../constants';
 import {
   Car, CarId, Cars, CarsMap,
 } from '../types';
@@ -23,6 +23,10 @@ class CarsStore {
 
   getTotalCount() {
     return this.totalCount;
+  }
+
+  getTotalPages() {
+    return Math.ceil(this.totalCount / CARS_PER_PAGE) || 1;
   }
 
   setTotalCount(value: number) {

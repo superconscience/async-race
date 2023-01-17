@@ -4,6 +4,7 @@ import { CarId, Component } from '../types';
 import { $, replaceWith } from '../utils/functions';
 import GarageHeading from './garage-heading';
 import GarageItem from './garage-item';
+import Pagination from './pagination';
 
 class GarageList implements Component<HTMLDivElement> {
   static $element: HTMLDivElement;
@@ -13,9 +14,6 @@ class GarageList implements Component<HTMLDivElement> {
     pageHeading: 'garage__page-heading',
     ListWrapper: 'garage__garage-list-wrapper',
     listItem: 'garage-list__item',
-    pagination: 'garage-list__pagination',
-    paginationItem: 'garage-list__pagination-item',
-    paginationLink: 'garage-list__pagination-link',
   };
 
   constructor() {
@@ -35,7 +33,7 @@ class GarageList implements Component<HTMLDivElement> {
     const $container = $('div', GarageList.classes.ListWrapper);
     const $pageHeading = this.createPageHeading();
     const $list = $('ul', GarageList.classes.garageList);
-    const $pagination = this.createPagination();
+    const $pagination = new Pagination(CARS_PER_PAGE).element();
 
     $container.append($pageHeading, $pagination, $list);
 
@@ -60,26 +58,10 @@ class GarageList implements Component<HTMLDivElement> {
     return $container;
   }
 
-  private createPagination(): HTMLUListElement {
-    const $container = $('ul', GarageList.classes.pagination);
-    const listItemsCount = App.getStore().cars.cars.length;
-    const pagesCount = Math.ceil(listItemsCount / CARS_PER_PAGE) || 1;
-    const pageNumbers = Array(pagesCount).fill(0).map((_, i) => i + 1);
-
-    pageNumbers.forEach((number) => {
-      const $item = $('li', GarageList.classes.paginationItem);
-      $item.textContent = number.toString();
-
-      $container.append($item);
-    });
-
-    return $container;
-  }
-
   private createPageHeading(): HTMLHeadingElement {
     const $heading = $('h3', GarageList.classes.pageHeading);
 
-    $heading.textContent = `Page #${App.getController().getGarageView().getPage()}`;
+    $heading.textContent = `Page #${App.getController().getGarageView().getPage()} of ${App.getStore().cars.getTotalPages()}`;
 
     return $heading;
   }
