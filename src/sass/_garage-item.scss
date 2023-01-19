@@ -1,5 +1,6 @@
 .garage-item {
   position: relative;
+  margin-bottom: 60px;
 
   &_update {
     .garage-item__update-wrapper {
@@ -9,6 +10,16 @@
     .garage-item__btn-show-update-car {
       display: none;
     }
+  }
+
+  &.drive {
+    .garage-item__btn-start {
+      @extend %disabled;
+    }
+  }
+
+  .garage-item__btn-stop:not(.garage-item.drive .garage-item__btn-stop) {
+    @extend %disabled;
   }
 }
 

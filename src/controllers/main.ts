@@ -1,6 +1,7 @@
 import App from '../lib/app';
 import Controller from '../lib/controller';
-import CarModel from '../models/Car';
+import CarModel from '../models/car';
+import WinnerModel from '../models/winner';
 import GarageView from '../views/garage';
 import WinnersView from '../views/winners';
 
@@ -9,7 +10,9 @@ class MainController extends Controller {
 
   private winnersView = new WinnersView();
 
-  private carModel: CarModel = new CarModel(App.getStore().cars, App.getApiClient());
+  private carModel: CarModel = new CarModel(App.getStore(), App.getApiClient());
+
+  private winnerModel: WinnerModel = new WinnerModel(App.getStore().winners, App.getApiClient());
 
   getGarageView(): GarageView {
     return this.garageView;
@@ -21,6 +24,10 @@ class MainController extends Controller {
 
   getCarModel(): CarModel {
     return this.carModel;
+  }
+
+  getWinnerModel(): WinnerModel {
+    return this.winnerModel;
   }
 
   constructor() {

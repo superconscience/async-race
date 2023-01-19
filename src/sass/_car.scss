@@ -1,4 +1,36 @@
+$car-width: 80px;
+$car-height: 60px;
+
+@keyframes drive {
+  0% {
+    left: 0;
+  }
+
+  100% {
+    left: calc(100% - $car-width);
+  }
+}
+
 .car {
-  width: 80px;
-  height: 60px;
+  position: absolute;
+  width: $car-width;
+  height: $car-height;
+  left: 0;
+  top: 100%;
+}
+
+.garage-item {
+  &.drive {
+    .car {
+      animation-name: drive;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+    }
+
+    &.stop {
+      .car {
+        animation-play-state: paused;
+      }
+    }
+  }
 }

@@ -1,13 +1,22 @@
-import { CARS_PER_PAGE, GENERATE_CARS_COUNT } from '../constants';
+import { CARS_PER_PAGE } from '../constants';
 import {
-  Car, CarId, Cars, CarsMap,
+  Car, CarId, Cars, CarsMap, RaceResults, RaceStatus,
 } from '../types';
-import { createCar } from '../utils/functions';
 
 class CarsStore {
   private _cars: Cars = [];
 
+  private _racingCars: CarId[] = [];
+
+  private _raceResults: RaceResults = {};
+
   private totalCount = 0;
+
+  isSoloRace = false;
+
+  raceTimer = 0;
+
+  raceStatus: RaceStatus = RaceStatus.Idle;
 
   get cars(): Cars {
     return this._cars;
@@ -21,6 +30,32 @@ class CarsStore {
     return Object.fromEntries(this.cars.map((car) => [car.id, car]));
   }
 
+  get racingCars(): CarId[] {
+    return this._racingCars;
+  }
+
+  get raceResults(): RaceResults {
+    return this._raceResults;
+  }
+
+  addRacingCar(id: CarId): void {
+    if (this._racingCars.length === 0) {
+      this.raceStatus = this.isSoloRace ? RaceStatus.SoloStarted : RaceStatus.Started;
+    }
+    this._racingCars.push(id);
+  }
+
+  removeRacingCar(id: CarId): void {
+    this._racingCars = this._racingCars.filter((_id) => _id !== id);
+    if (this._racingCars.length === 0) {
+      this.raceStatus = this.isSoloRace ? RaceStatus.SoloFinished : RaceStatus.Idle;
+    }
+  }
+
+  get isSomeCarRacing(): boolean {
+    return this._racingCars.length > 0;
+  }
+
   getTotalCount() {
     return this.totalCount;
   }
@@ -31,6 +66,17 @@ class CarsStore {
 
   setTotalCount(value: number) {
     this.totalCount = value;
+  }
+
+  addRaceResult(key: keyof RaceResults, value: RaceResults[typeof key]): void {
+    this._raceResults[key] = value;
+  }
+
+  resetRace(): void {
+    this._raceResults = {};
+    this.raceTimer = 0;
+    this._racingCars = [];
+    this.raceStatus = RaceStatus.Idle;
   }
 
   addCar(value: Car): void {
@@ -52,11 +98,6 @@ class CarsStore {
 
   nameExists(name: string): boolean {
     return this.cars.filter((car) => car.name === name).length > 0;
-  }
-
-  generateCars() {
-    const newCars = Array(GENERATE_CARS_COUNT).fill(0).map((_, i) => createCar(`Car-${i + 1}`, '#aaffcc'));
-    this.cars = this.cars.concat(newCars);
   }
 }
 

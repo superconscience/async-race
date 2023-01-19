@@ -1,10 +1,13 @@
 import { Component } from '../types';
 import { $, replaceWith } from '../utils/functions';
 import GarageHeading from './garage-heading';
+import GarageItem from './garage-item';
 import GarageList from './garage-list';
 
 class Garage implements Component {
   static $element: HTMLElement;
+
+  static garageItems: GarageItem[] = [];
 
   private static readonly classes = {
     garage: 'garage',

@@ -1,5 +1,3 @@
-import { CreateCarRequestData } from '../types';
-
 export type HttpOptions<O extends keyof RequestInit = 'method'> = Omit<RequestInit, O | 'method'>;
 
 export type ResponseCallback = (response: Response) => void;
@@ -37,7 +35,7 @@ class Http {
     return response.json() as Promise<T>;
   }
 
-  async put<T = unknown>(endpoint: string, data: CreateCarRequestData, options: HttpOptions<'body'> = {}): Promise<T> | never {
+  async put<T = unknown>(endpoint: string, data: unknown, options: HttpOptions<'body'> = {}): Promise<T> | never {
     const response = await this.fetch(
       endpoint,
       {
@@ -47,6 +45,11 @@ class Http {
         body: JSON.stringify(data),
       },
     );
+    return response.json() as Promise<T>;
+  }
+
+  async patch<T = unknown>(endpoint: string, options: HttpOptions = {}): Promise<T> | never {
+    const response = await this.fetch(endpoint, { ...options, method: 'PATCH' });
     return response.json() as Promise<T>;
   }
 

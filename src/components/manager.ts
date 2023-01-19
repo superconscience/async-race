@@ -1,16 +1,19 @@
 import App from '../lib/app';
-import { Component } from '../types';
+import { Component, RaceStatus } from '../types';
 import {
   $,
   isHTMLButtonElementOfClass,
+  replaceWith,
 } from '../utils/functions';
 import Button from './button';
 import ConstructorPanel from './constructor-panel';
+import Garage from './garage';
 import GarageList from './garage-list';
 import Loader from './loader';
+import Popup from './popup';
 
 class Manager implements Component {
-  $element: HTMLElement;
+  static $element: HTMLElement;
 
   static readonly classes = {
     manager: 'manager',
@@ -18,14 +21,18 @@ class Manager implements Component {
     startRace: 'start-race',
     resetRace: 'reset-race',
     generateCars: 'generate-cars',
+    started: 'manager_race-started',
+    hasWinner: 'manager_race-has-winner',
+    soloStarted: 'manager_solo-race-started',
+    soloFinished: 'manager_solo-race-finished',
   };
 
   constructor() {
-    this.$element = this.create();
+    Manager.$element = replaceWith(Manager.$element, this.create());
   }
 
   element(): HTMLElement {
-    return this.$element;
+    return Manager.$element;
   }
 
   create(): HTMLElement {
@@ -36,20 +43,20 @@ class Manager implements Component {
     $container.append($constructorPanel, $controlPanel);
 
     $controlPanel.append(
-      this.createRaceButton(),
-      this.createResetButton(),
+      this.createStartRaceButton(),
+      this.createResetRaceButton(),
       this.createGenerateCarsButton(),
     );
 
     return $container;
   }
 
-  private createRaceButton(): HTMLButtonElement {
-    return new Button('Race', Manager.classes.startRace).element();
+  private createStartRaceButton(): HTMLButtonElement {
+    return new Button('Race', Manager.classes.startRace, this.startRaceClickHandler).element();
   }
 
-  private createResetButton(): HTMLButtonElement {
-    return new Button('Reset', Manager.classes.resetRace).element();
+  private createResetRaceButton(): HTMLButtonElement {
+    return new Button('Reset', Manager.classes.resetRace, this.resetRace).element();
   }
 
   private createGenerateCarsButton(): HTMLButtonElement {
@@ -68,6 +75,73 @@ class Manager implements Component {
     GarageList.refresh();
     Loader.off();
   };
+
+  private startRaceClickHandler: EventListener = async (event) => {
+    if (!isHTMLButtonElementOfClass(event.target, Manager.classes.startRace)) {
+      return;
+    }
+
+    if (Garage.garageItems.length === 0) {
+      return;
+    }
+
+    this.setRaceAsMultiple();
+
+    await this.startRace();
+  };
+
+  private async startRace(): Promise<void> {
+    if (Garage.garageItems.length === 0) {
+      return;
+    }
+
+    Manager.$element.classList.add(Manager.classes.started);
+
+    await App.getController().getWinnerModel().fetchWinners();
+    console.log(App.getStore().winners.winners);
+    App.getStore().cars.raceTimer = Date.now();
+
+    await Promise.allSettled(
+      Garage.garageItems.map((item) => item.start()),
+    );
+  }
+
+  private async resetRace(): Promise<void> {
+    App.getStore().cars.resetRace();
+    await Promise.allSettled(
+      Garage.garageItems.map((item) => item.resetCar()),
+    );
+    Popup.hide();
+    Manager.resetStyle();
+    Manager.$element.classList.remove(Manager.classes.started);
+  }
+
+  private setRaceAsMultiple(): void {
+    App.getStore().cars.isSoloRace = false;
+  }
+
+  static updateStyle(): void {
+    const { cars: { raceStatus } } = App.getStore();
+
+    Manager.resetStyle();
+
+    Manager.$element.classList.toggle(
+      Manager.classes.soloStarted, raceStatus === RaceStatus.SoloStarted);
+
+    Manager.$element.classList.toggle(
+      Manager.classes.soloFinished, raceStatus === RaceStatus.SoloFinished);
+
+    Manager.$element.classList.toggle(
+      Manager.classes.hasWinner, raceStatus === RaceStatus.HasWinner);
+  }
+
+  static resetStyle(): void {
+    Manager.$element.classList.remove(
+      Manager.classes.hasWinner,
+      Manager.classes.soloStarted,
+      Manager.classes.soloFinished,
+    );
+  }
 }
 
 export default Manager;

@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { Car } from '../types';
+import { CarId, CreateCarRequestData, Winner } from '../types';
 import { DatasetHelper } from './types';
 import {
   CAR_BRANDS, CAR_MODELS, GENERATE_CARS_COUNT, MAX_HEX,
@@ -36,10 +36,13 @@ export const bem = (
 
 export const generateId = () => uuid();
 
-export const createCar = (name: string, color: string): Car => ({
-  id: generateId(),
+export const createCar = (name: string, color: string): CreateCarRequestData => ({
   name,
   color,
+});
+
+export const createWinner = (id: CarId, wins: number, time: number): Winner => ({
+  id, wins, time,
 });
 
 export const generateCarName = () => {

@@ -1,5 +1,6 @@
 import {
-  Car, CarId, Cars, CreateCarRequestData,
+  Car, CarId, Cars, CreateCarRequestData, CreateWinnerRequestData,
+  EngineStatus, UpdateWinnerRequestData, Winner, Winners as WinnersType,
 } from '../types';
 import Http, { ResponseCallback } from './http';
 
@@ -12,6 +13,17 @@ export enum Endpoints {
 export enum ResponseHeaders {
   XTotalCount = 'X-Total-Count',
 }
+
+export type SetEngineStatus = EngineStatus.Started | EngineStatus.Stopped;
+
+export type SetEngineResponseData = {
+  velocity: string,
+  distance: string,
+};
+
+export type DriveResponseData = {
+  success: boolean;
+};
 
 class ApiClient {
   private baseUrl = 'http://127.0.0.1:3000';
@@ -40,6 +52,26 @@ class ApiClient {
 
   deleteCar(id: CarId): Promise<void> {
     return this.http.delete(`${Endpoints.Garage}/${id}`);
+  }
+
+  setEngine(id: CarId, status: SetEngineStatus): Promise<SetEngineResponseData> {
+    return this.http.patch<SetEngineResponseData>(`${Endpoints.Engine}?id=${id}&status=${status}`);
+  }
+
+  drive(id: CarId): Promise<DriveResponseData> {
+    return this.http.patch<DriveResponseData>(`${Endpoints.Engine}?id=${id}&status=${EngineStatus.drive}`);
+  }
+
+  getWinners(): Promise<WinnersType> {
+    return this.http.get<WinnersType>(Endpoints.Winners);
+  }
+
+  createWinner(data: CreateWinnerRequestData): Promise<Winner> {
+    return this.http.post<Winner>(Endpoints.Winners, data);
+  }
+
+  updateWinner(id: CarId, data: UpdateWinnerRequestData): Promise<Winner> {
+    return this.http.put<Winner>(`${Endpoints.Winners}/${id}`, data);
   }
 }
 
