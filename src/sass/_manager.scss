@@ -40,3 +40,9 @@
 .reset-race {
   @extend %disabled;
 }
+
+.status_saving-winners {
+  .start-race {
+    @extend %disabled;
+  }
+}

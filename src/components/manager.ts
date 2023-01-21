@@ -5,6 +5,7 @@ import {
   isHTMLButtonElementOfClass,
   replaceWith,
 } from '../utils/functions';
+import GarageView from '../views/garage';
 import Button from './button';
 import ConstructorPanel from './constructor-panel';
 import Garage from './garage';
@@ -70,7 +71,7 @@ class Manager implements Component {
 
     Loader.on();
     await App.getController().getCarModel().generateCars(
-      App.getController().getGarageView().getPage());
+      GarageView.getPage());
 
     GarageList.refresh();
     Loader.off();
@@ -98,7 +99,6 @@ class Manager implements Component {
     Manager.$element.classList.add(Manager.classes.started);
 
     await App.getController().getWinnerModel().fetchWinners();
-    console.log(App.getStore().winners.winners);
     App.getStore().cars.raceTimer = Date.now();
 
     await Promise.allSettled(

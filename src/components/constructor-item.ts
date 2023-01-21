@@ -3,6 +3,7 @@ import { CarId, Component } from '../types';
 import {
   $, createCar, isHTMLElementOfClass,
 } from '../utils/functions';
+import GarageView from '../views/garage';
 import Button from './button';
 import Garage from './garage';
 import Loader from './loader';
@@ -102,7 +103,7 @@ class ConstructorItem<T extends ConstructorMode = 'create'> implements Component
     Loader.on();
     await App.getController().getCarModel().createCar(
       createCar(name, color),
-      App.getController().getGarageView().getPage());
+      GarageView.getPage());
 
     ConstructorItem.onCarCreate();
     Loader.off();

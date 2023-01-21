@@ -1,3 +1,7 @@
+.pagination {
+  display: flex;
+}
+
 .pagination__link {
   &.disabled {
     user-select: none;

@@ -1,9 +1,13 @@
+@import './normalize';
 @import './placeholders';
 @import './base';
 @import './manager';
+@import './constructor-item';
+@import './garage-list';
 @import './garage-item';
 @import './car';
 @import './track';
 @import './loader';
 @import './pagination';
 @import './popup';
+@import './status-box';

@@ -77,18 +77,27 @@ class CarModel {
     const resultTime = (Date.now() - carsStore.raceTimer) / 1000;
     const isWinner = Object.keys(carsStore.raceResults).length === 0;
     const car = carsStore.carsMap[id];
+    const afterSavingWinner = () => {
+      winnersStore.isSavingWinners = false;
+    };
 
     carsStore.addRaceResult(id, resultTime);
 
     const sameWinner = winnersStore.getWinnerByCarId(id);
 
     if (isWinner) {
+      winnersStore.isSavingWinners = true;
       carsStore.raceStatus = RaceStatus.HasWinner;
       if (sameWinner) {
-        await winnerModel.updateWinner(
-          id, { time: Math.min(resultTime, sameWinner.time), wins: sameWinner.wins + 1 });
+        winnerModel
+          .updateWinner(
+            id,
+            { time: Math.min(resultTime, sameWinner.time), wins: sameWinner.wins + 1 },
+          )
+          .finally(afterSavingWinner);
       } else {
-        await winnerModel.createWinner(createWinner(id, 1, resultTime));
+        winnerModel.createWinner(createWinner(id, 1, resultTime))
+          .finally(afterSavingWinner);
       }
 
       winnersStore.currentWinner = car;

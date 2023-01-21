@@ -1,17 +1,21 @@
 import Router from '../lib/router';
 import { Actions, Component } from '../types';
 import { $ } from '../utils/functions';
-import LinkButton from './link-button';
+import GarageView from '../views/garage';
+import WinnersView from '../views/winners';
+import Button from './button';
 
 class Header implements Component {
   $element: HTMLElement;
 
   create(): HTMLElement {
     const $header = $('header', 'header');
-    const $garageLink = new LinkButton('To Garage', '', Router.createLink(Actions.Garage)).element();
-    const $winnersLink = new LinkButton('To Winner', '', Router.createLink(Actions.Winners)).element();
+    const garagePage = GarageView.getPage();
+    const winnersPage = WinnersView.getPage();
+    const $garageButton = new Button('To Garage', '', () => { Router.push(Actions.Garage, garagePage ? [garagePage] : []); }).element();
+    const $winnersButton = new Button('To Winners', '', () => { Router.push(Actions.Winners, winnersPage ? [winnersPage] : []); }).element();
 
-    $header.append($garageLink, $winnersLink);
+    $header.append($garageButton, $winnersButton);
     return $header;
   }
 

@@ -27,7 +27,7 @@ class CarsStore {
   }
 
   get carsMap(): CarsMap {
-    return Object.fromEntries(this.cars.map((car) => [car.id, car]));
+    return Object.fromEntries(this._cars.map((car) => [car.id, car]));
   }
 
   get racingCars(): CarId[] {

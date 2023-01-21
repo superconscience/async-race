@@ -17,6 +17,7 @@ class Garage implements Component {
   };
 
   constructor() {
+    Garage.garageItems = [];
     Garage.$element = replaceWith(Garage.$element, this.create());
   }
 

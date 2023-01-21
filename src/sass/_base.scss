@@ -6,3 +6,13 @@ body {
   font-family: 'Roboto', sans-serif;
   font-size: 1.6rem;
 }
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+button:not(.start-car, .stop-car) {
+  height: 30px;
+}

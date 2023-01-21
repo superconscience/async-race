@@ -8,6 +8,7 @@ import {
 import {
   $, isHTMLButtonElementOfClass, isHTMLElementOfClass,
 } from '../utils/functions';
+import GarageView from '../views/garage';
 import Button from './button';
 import Car from './car';
 import ConstructorItem from './constructor-item';
@@ -15,6 +16,11 @@ import Garage from './garage';
 import Loader from './loader';
 import Manager from './manager';
 import Popup from './popup';
+
+enum ControlButtonType {
+  Start = 'start',
+  Stop = 'stor',
+}
 
 class GarageItem implements Component {
   $element: HTMLDivElement;
@@ -140,17 +146,17 @@ class GarageItem implements Component {
   }
 
   async start() {
-    Loader.on();
+    this.disableStart();
     const engineData = await App.getController().getCarModel().setEngine(
-      this.id, EngineStatus.Started).catch(() => { Loader.off(); });
+      this.id, EngineStatus.Started).catch(() => { this.enableStart(); });
 
     if (!engineData) {
-      Loader.off();
+      this.enableStart();
       return;
     }
 
     this.driveCar(engineData);
-    Loader.off();
+    this.enableStart();
 
     await App.getController()
       .getCarModel()
@@ -205,7 +211,7 @@ class GarageItem implements Component {
 
     Loader.on();
     await App.getController().getCarModel().deleteCar(
-      this.id, App.getController().getGarageView().getPage());
+      this.id, GarageView.getPage());
 
     GarageItem.onCarDelete();
     Loader.off();
@@ -221,16 +227,16 @@ class GarageItem implements Component {
     this.$element.classList.add(GarageItem.classes.garageItemUpdate);
   };
 
-  private carAnimationEndHandler: EventListener = () => {
-    this.finish();
-  };
-
   private carAnimationStartHandler: EventListener = () => {
     this.onCarAnimationStatusChange();
   };
 
   private carAnimationPauseHandler: EventListener = () => {
     this.onCarAnimationStatusChange();
+  };
+
+  private carAnimationEndHandler: EventListener = () => {
+    this.finish();
   };
 
   private onCarAnimationStatusChange(): void {
@@ -263,8 +269,6 @@ class GarageItem implements Component {
     if (!$car) {
       return;
     }
-
-    $car.style.animationDuration = '';
     this.$element.classList.add(GarageItem.classes.stop);
     this.onCarAnimationStatusChange();
   }
@@ -300,12 +304,38 @@ class GarageItem implements Component {
 
   private async finish(): Promise<void> {
     const maybeWinResult = await App.getController().getCarModel().finish(this.id);
+    console.log({ maybeWinResult });
 
     if (maybeWinResult) {
       this.notifyWinner(maybeWinResult.car, maybeWinResult.time);
     }
 
     this.finishCar();
+  }
+
+  private toggleControlButton(type: ControlButtonType, toggle: boolean): void {
+    const className = type === ControlButtonType.Start
+      ? GarageItem.classes.startBtn : GarageItem.classes.stopBtn;
+    const $button = this.$element.querySelector<HTMLButtonElement>(`.${className}`);
+    if ($button) {
+      $button.disabled = !toggle;
+    }
+  }
+
+  private disableStart(): void {
+    this.toggleControlButton(ControlButtonType.Start, false);
+  }
+
+  private disableStop(): void {
+    this.toggleControlButton(ControlButtonType.Stop, false);
+  }
+
+  private enableStart(): void {
+    this.toggleControlButton(ControlButtonType.Start, true);
+  }
+
+  private enableStop(): void {
+    this.toggleControlButton(ControlButtonType.Stop, true);
   }
 
   private notifyWinner(winner: CarType, result: number): void {

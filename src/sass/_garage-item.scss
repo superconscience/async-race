@@ -26,3 +26,18 @@
 .garage-item__update-wrapper {
   display: none;
 }
+
+.garage-item__top {
+  display: flex;
+  align-items: center;
+  height: 30px;
+}
+
+.garage-item__bottom {
+  position: relative;
+  top: 20px;
+}
+
+.garage-item__car-name {
+  margin: 0 0 0 10px;
+}

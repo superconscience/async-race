@@ -2,6 +2,7 @@ import { CARS_PER_PAGE } from '../constants';
 import App from '../lib/app';
 import { CarId, Component } from '../types';
 import { $, replaceWith } from '../utils/functions';
+import GarageView from '../views/garage';
 import GarageHeading from './garage-heading';
 import GarageItem from './garage-item';
 import Pagination from './pagination';
@@ -61,7 +62,7 @@ class GarageList implements Component<HTMLDivElement> {
   private createPageHeading(): HTMLHeadingElement {
     const $heading = $('h3', GarageList.classes.pageHeading);
 
-    $heading.textContent = `Page #${App.getController().getGarageView().getPage()} of ${App.getStore().cars.getTotalPages()}`;
+    $heading.textContent = `Page #${GarageView.getPage()} of ${App.getStore().cars.getTotalPages()}`;
 
     return $heading;
   }

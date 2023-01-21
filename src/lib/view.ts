@@ -3,16 +3,12 @@ abstract class View {
 
   protected $container = document.createDocumentFragment();
 
-  protected page = 1;
+  protected static page = 1;
 
   private name: string;
 
   getName(): string {
     return this.name;
-  }
-
-  getPage(): number {
-    return this.page;
   }
 
   constructor(name: string) {

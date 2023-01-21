@@ -6,13 +6,13 @@ import GarageView from '../views/garage';
 import WinnersView from '../views/winners';
 
 class MainController extends Controller {
-  private garageView = new GarageView(this.getPage());
+  private garageView: GarageView;
 
-  private winnersView = new WinnersView();
+  private winnersView: WinnersView;
 
-  private carModel: CarModel = new CarModel(App.getStore(), App.getApiClient());
+  private carModel: CarModel;
 
-  private winnerModel: WinnerModel = new WinnerModel(App.getStore().winners, App.getApiClient());
+  private winnerModel: WinnerModel;
 
   getGarageView(): GarageView {
     return this.garageView;
@@ -32,12 +32,17 @@ class MainController extends Controller {
 
   constructor() {
     super();
+    this.garageView = new GarageView(this.getPage());
+    this.winnersView = new WinnersView();
+    this.carModel = new CarModel(App.getStore(), App.getApiClient());
+    this.winnerModel = new WinnerModel(App.getStore().winners, App.getApiClient());
   }
 
   async garage(): Promise<void> {
     await this.carModel.fetchCars(this.getPage());
 
     this.garageView.render();
+    console.log(App.getStore());
   }
 
   winners(): void {

@@ -3,6 +3,8 @@ import Component from '../lib/component';
 import Router from '../lib/router';
 import { Actions } from '../types';
 import { $ } from '../utils/functions';
+import GarageView from '../views/garage';
+import Button from './button';
 
 class Pagination extends Component<HTMLUListElement> {
   limit: number;
@@ -33,7 +35,7 @@ class Pagination extends Component<HTMLUListElement> {
   private createPagination(): HTMLUListElement {
     const $container = $('ul', Pagination.classes.pagination);
     const listItemsCount = App.getStore().cars.getTotalCount();
-    const currentPage = App.getController().getGarageView().getPage();
+    const currentPage = GarageView.getPage();
     const prevPage = currentPage - 1;
     const nextPage = currentPage + 1;
     const pagesCount = Math.ceil(listItemsCount / this.limit) || 1;
@@ -44,6 +46,8 @@ class Pagination extends Component<HTMLUListElement> {
         Math.max(currentPage - 6, 0),
         currentPage > 6 ? currentPage + 4 : 10,
       );
+
+    console.log(currentPage, listItemsCount);
 
     const $prevItem = this.createPaginationItem(prevPage, pagesCount, '«');
     const $nextItem = this.createPaginationItem(nextPage, pagesCount, '»');
@@ -79,12 +83,19 @@ class Pagination extends Component<HTMLUListElement> {
   ): HTMLLIElement {
     const $item = $('li', Pagination.classes.item);
     const isDisabled = page <= 0 || page > pagesCount;
-    const href = isDisabled ? '' : Router.createLink(Actions.Garage, [page]);
     let className = Pagination.classes.link;
     if (isDisabled) {
       className += ' disabled';
     }
-    $item.innerHTML = `<a href = "${href}" class="${className}">${text}</a>`;
+    const $button = new Button(
+      text, className, () => {
+        if (!isDisabled) {
+          Router.push(Actions.Garage, [page]);
+        }
+      },
+    ).element();
+
+    $item.append($button);
 
     return $item;
   }

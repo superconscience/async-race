@@ -1,7 +1,16 @@
 import config from '../config/config';
 import { Actions } from '../types';
+import App from './app';
+
+export type RouterState = {
+  url: string;
+};
+
+export type UrlParams = (string | number)[];
 
 class Router {
+  protected static state: RouterState = Router.createState(window.location.href);
+
   protected uri: string;
 
   protected controller: string;
@@ -33,9 +42,12 @@ class Router {
   }
 
   constructor() {
-    const uri = window.location.href.replace(window.location.origin, '').slice(1);
+    const { url } = window.history.state;
 
-    this.uri = uri.trim();
+    if (typeof url !== 'string') {
+      throw new Error('Something went wrong');
+    }
+    this.uri = url.trim();
 
     // Get defaults
     this.route = config.defaultRoute;
@@ -49,6 +61,7 @@ class Router {
     const path = uriParts[0];
 
     const pathParts = path.split('/');
+    pathParts.shift();
     if (pathParts.length > 0) {
       // Get action
       if (pathParts[0]) {
@@ -64,11 +77,21 @@ class Router {
     }
   }
 
+  static createState(url: string): RouterState {
+    return { url };
+  }
+
+  static push(action: Actions, params?: UrlParams): void {
+    const route = Router.createLink(action, params);
+    window.history.pushState(Router.createState(route), '', route);
+    App.run();
+  }
+
   static redirect(location: string): void {
     window.location.href = location;
   }
 
-  static createLink(action: Actions, params?: (string | number)[]): string {
+  static createLink(action: Actions, params?: UrlParams): string {
     return `/${action}/${params ? params.map(String).join('/') : ''}`;
   }
 }

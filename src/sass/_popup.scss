@@ -28,8 +28,8 @@
   justify-content: center;
   align-items: center;
   z-index: 2000;
-  // background-color: rgba(0, 0, 0, 0.3);
-  // backdrop-filter: blur(3px);
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(3px);
   opacity: 0;
 
   &.show {

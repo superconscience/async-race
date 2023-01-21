@@ -1,9 +1,10 @@
 $car-width: 80px;
 $car-height: 60px;
+$car-initial-left: 100px;
 
 @keyframes drive {
   0% {
-    left: 0;
+    left: $car-initial-left;
   }
 
   100% {
@@ -15,8 +16,8 @@ $car-height: 60px;
   position: absolute;
   width: $car-width;
   height: $car-height;
-  left: 0;
-  top: 100%;
+  left: $car-initial-left;
+  bottom: -50px;
 }
 
 .garage-item {
