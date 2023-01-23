@@ -70,6 +70,8 @@ class GarageItem implements Component {
     const $topContainer = this.createTopContainer();
     const $bottomContainer = this.createBottomContainer();
 
+    $container.dataset.carId = this.id;
+
     $container.append($topContainer, $bottomContainer, $car, $track);
     return $container;
   }

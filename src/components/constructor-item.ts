@@ -77,12 +77,18 @@ class ConstructorItem<T extends ConstructorMode = 'create'> implements Component
   private createCarNameInput(): HTMLInputElement {
     const $input = $('input', ConstructorItem.classes.nameInput);
     $input.placeholder = 'Enter Brand - Model';
+    if (this.id) {
+      $input.dataset.carId = this.id;
+    }
     return $input;
   }
 
   private createColorPicker(): HTMLInputElement {
     const $color = $('input', ConstructorItem.classes.colorInput);
     $color.type = 'color';
+    if (this.id) {
+      $color.dataset.carId = this.id;
+    }
     return $color;
   }
 

@@ -65,7 +65,6 @@ class Http {
   private errorHandler(response: Response): Response | never {
     if ([400, 404, 429, 500].includes(Number(response.status))) {
       console.error(response);
-      throw new Error(response.statusText);
     }
     return response;
   }

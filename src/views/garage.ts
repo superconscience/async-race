@@ -1,3 +1,4 @@
+import ConstructorItem from '../components/constructor-item';
 import Footer from '../components/footer';
 import GarageItem from '../components/garage-item';
 import GarageMain from '../components/garage-main';
@@ -21,11 +22,10 @@ export type GarageViewStateHistory = {
   current: GarageViewState;
 };
 
-// {[page]: [HTMLInputElement, ...]}
-export type GarageViewInputState = Record<string, HTMLInputElement[]>;
+export type GarageViewEditorState = { name: string, color: string };
 
-// {[page]: [true, false,...]} if true then item is shown, otherwise hidden
-export type GarageViewUpdateItemsShownState = Record<string, boolean[]>;
+// {[cardId]: GarageViewEditorState}
+export type GarageViewUpdateState = Record<string, GarageViewEditorState & { toggle: boolean }>;
 
 class GarageView extends View {
   private _status: GarageViewStatus = GarageViewStatus.Idle;
@@ -39,9 +39,9 @@ class GarageView extends View {
     },
   };
 
-  static inputState: GarageViewInputState = {};
+  static createEditorState: GarageViewEditorState;
 
-  static updateItemsShownState: GarageViewUpdateItemsShownState = {};
+  static updateEditorsState: GarageViewUpdateState;
 
   static readonly classes = {
     statusSavingWinners: 'status_saving-winners',
@@ -86,32 +86,45 @@ class GarageView extends View {
   }
 
   restoreInputState(): void {
-    const { page } = GarageView;
-    if (!GarageView.inputState[page]) {
+    if (!GarageView.createEditorState) {
       return;
     }
 
-    const $currentInputs = [...this.$container.querySelectorAll('input')];
+    const $nameInputCreate = this.$container.querySelector<HTMLInputElement>(`.${ConstructorItem.classes.nameInputCreate}`);
+    const $colorInputCreate = this.$container.querySelector<HTMLInputElement>(`.${ConstructorItem.classes.colorInputCreate}`);
 
-    GarageView.inputState[page].forEach(($prevInput, index) => {
-      if ($currentInputs[index]) {
-        $currentInputs[index].value = $prevInput.value;
-      }
-    });
+    if ($nameInputCreate) {
+      $nameInputCreate.value = GarageView.createEditorState.name;
+    }
+    if ($colorInputCreate) {
+      $colorInputCreate.value = GarageView.createEditorState.color;
+    }
 
-    if (!GarageView.updateItemsShownState[page]) {
+    if (!GarageView.updateEditorsState) {
       return;
     }
 
-    const $currentGarageItems = [
-      ...this.$container.querySelectorAll(`.${GarageItem.classes.garageItem}`),
-    ];
+    [...this.$container.querySelectorAll<HTMLElement>(`.${GarageItem.classes.garageItem}`)]
+      .forEach(($item) => {
+        const { carId } = $item.dataset;
 
-    GarageView.updateItemsShownState[page].forEach((toggle, index) => {
-      if ($currentGarageItems[index]) {
-        $currentGarageItems[index].classList.toggle(GarageItem.classes.garageItemUpdate, toggle);
-      }
-    });
+        if (carId === undefined || GarageView.updateEditorsState[carId] === undefined) {
+          return;
+        }
+
+        const state = GarageView.updateEditorsState[carId];
+        const $nameInput = $item.querySelector<HTMLInputElement>(`.${ConstructorItem.classes.nameInputUpdate}`);
+        const $colorInput = $item.querySelector<HTMLInputElement>(`.${ConstructorItem.classes.colorInputUpdate}`);
+
+        $item.classList.toggle(GarageItem.classes.garageItemUpdate, state.toggle);
+        if ($nameInput) {
+          $nameInput.value = state.name;
+        }
+
+        if ($colorInput) {
+          $colorInput.value = state.color;
+        }
+      });
   }
 
   static getPage(): number {
