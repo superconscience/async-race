@@ -118,6 +118,7 @@ class ConstructorItem<T extends ConstructorMode = 'create'> implements Component
       GarageView.getPage());
 
     ConstructorItem.onCarCreate();
+    this.resetInputs();
     Loader.off();
   };
 
@@ -145,6 +146,7 @@ class ConstructorItem<T extends ConstructorMode = 'create'> implements Component
 
     carsStore.updateCar(this.id, updatedCar);
     ConstructorItem.onCarUpdate();
+    this.resetInputs();
     Loader.off();
   };
 
@@ -160,7 +162,31 @@ class ConstructorItem<T extends ConstructorMode = 'create'> implements Component
     if ($garageItem) {
       $garageItem.classList.remove(GarageItem.classes.garageItemUpdate);
     }
+
+    this.resetInputs();
   };
+
+  private resetInputs() {
+    const { carsMap } = App.getStore().cars;
+    const $nameInput = this.$element.querySelector<HTMLInputElement>(`.${ConstructorItem.classes.nameInput}`);
+    const $colorInput = this.$element.querySelector<HTMLInputElement>(`.${ConstructorItem.classes.colorInput}`);
+
+    if ($nameInput) {
+      if (this.mode === 'create') {
+        $nameInput.value = '';
+      } else if (this.id) {
+        $nameInput.value = carsMap[this.id].name;
+      }
+    }
+
+    if ($colorInput) {
+      if (this.mode === 'create') {
+        $colorInput.value = '#000000';
+      } else if (this.id) {
+        $colorInput.value = carsMap[this.id].color;
+      }
+    }
+  }
 
   static onCarCreate(): void {
     Garage.refresh();
