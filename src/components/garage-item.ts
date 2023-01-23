@@ -211,10 +211,12 @@ class GarageItem implements Component {
 
     Loader.on();
     await App.getController().getCarModel().deleteCar(
-      this.id, GarageView.getPage());
-
-    GarageItem.onCarDelete();
-    Loader.off();
+      this.id,
+      GarageView.getPage(),
+    ).finally(() => {
+      GarageItem.onCarDelete();
+      Loader.off();
+    });
   };
 
   private showUpdateButtonClickHandler: EventListener = (event) => {

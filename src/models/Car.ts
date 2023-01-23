@@ -41,9 +41,11 @@ class CarModel {
   }
 
   async deleteCar(id: CarId, page: number): Promise<void> {
-    await this.client.deleteCar(id);
-    await App.getController().getWinnerModel().deleteWInner(id);
-    await this.fetchCars(page);
+    await this.client.deleteCar(id).finally(async () => {
+      await App.getController().getWinnerModel().deleteWInner(id).finally(async () => {
+        await this.fetchCars(page);
+      });
+    });
   }
 
   async generateCars(page: number): Promise<void> {
