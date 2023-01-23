@@ -14,9 +14,9 @@
   "parserOptions": {
     "ecmaVersion": 2020,
     "sourceType": "module",
-    "project": "./tsconfig.json"
+    "project": ["./tsconfig.json"]
   },
-  "ignorePatterns": ["node_modules/"],
+  "ignorePatterns": ["*.config.js", "node_modules/", "dist/"],
   "rules": {
     "no-debugger": "off",
     "no-console": 0,
