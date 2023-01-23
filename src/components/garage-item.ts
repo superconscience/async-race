@@ -191,10 +191,10 @@ class GarageItem implements Component {
       return;
     }
 
-    this.cancelRaceAsSolo();
-
     const engineData = await App.getController().getCarModel().setEngine(
       this.id, EngineStatus.Stopped).catch();
+
+    this.cancelRaceAsSolo();
 
     if (!engineData) {
       return;

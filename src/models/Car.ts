@@ -73,7 +73,6 @@ class CarModel {
 
   async finish(id: CarId): Promise<{ car: Car, time: number } | null> {
     const { cars: carsStore, winners: winnersStore } = this.store;
-
     if (carsStore.isSoloRace) {
       carsStore.removeRacingCar(id);
       return null;
