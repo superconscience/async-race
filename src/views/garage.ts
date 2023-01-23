@@ -1,10 +1,11 @@
-import Header from '../components/header';
+import Footer from '../components/footer';
+import GarageItem from '../components/garage-item';
 import GarageMain from '../components/garage-main';
-import View from '../lib/view';
+import Header from '../components/header';
 import Loader from '../components/loader';
 import Popup from '../components/popup';
 import StatusBox from '../components/status-box';
-import Footer from '../components/footer';
+import View from '../lib/view';
 
 export enum GarageViewStatus {
   Idle = 'Idle',
@@ -20,6 +21,12 @@ export type GarageViewStateHistory = {
   current: GarageViewState;
 };
 
+// {[page]: [HTMLInputElement, ...]}
+export type GarageViewInputState = Record<string, HTMLInputElement[]>;
+
+// {[page]: [true, false,...]} if true then item is shown, otherwise hidden
+export type GarageViewUpdateItemsShownState = Record<string, boolean[]>;
+
 class GarageView extends View {
   private _status: GarageViewStatus = GarageViewStatus.Idle;
 
@@ -31,6 +38,10 @@ class GarageView extends View {
       page: 1,
     },
   };
+
+  static inputState: GarageViewInputState = {};
+
+  static updateItemsShownState: GarageViewUpdateItemsShownState = {};
 
   static readonly classes = {
     statusSavingWinners: 'status_saving-winners',
@@ -66,11 +77,41 @@ class GarageView extends View {
       new Popup().element(),
       new StatusBox().element(),
     );
+    this.restoreInputState();
   }
 
   toggleSavingWinnersStatus(toggle: boolean): void {
     this.status = toggle ? GarageViewStatus.SavingWinners : GarageViewStatus.Idle;
     StatusBox.setMessage(toggle ? GarageView.statusMessages.savingWinners : '');
+  }
+
+  restoreInputState(): void {
+    const { page } = GarageView;
+    if (!GarageView.inputState[page]) {
+      return;
+    }
+
+    const $currentInputs = [...this.$container.querySelectorAll('input')];
+
+    GarageView.inputState[page].forEach(($prevInput, index) => {
+      if ($currentInputs[index]) {
+        $currentInputs[index].value = $prevInput.value;
+      }
+    });
+
+    if (!GarageView.updateItemsShownState[page]) {
+      return;
+    }
+
+    const $currentGarageItems = [
+      ...this.$container.querySelectorAll(`.${GarageItem.classes.garageItem}`),
+    ];
+
+    GarageView.updateItemsShownState[page].forEach((toggle, index) => {
+      if ($currentGarageItems[index]) {
+        $currentGarageItems[index].classList.toggle(GarageItem.classes.garageItemUpdate, toggle);
+      }
+    });
   }
 
   static getPage(): number {

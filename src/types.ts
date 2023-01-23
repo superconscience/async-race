@@ -61,3 +61,7 @@ export interface Component<T extends HTMLElement = HTMLElement> {
 export enum ErrorNames {
   PopupError = 'PopupError',
 }
+
+export enum CustomEvents {
+  BEFOREROUTERPUSH = 'beforerouterpush',
+}

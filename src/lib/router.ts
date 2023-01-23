@@ -1,5 +1,5 @@
 import config from '../config/config';
-import { Actions } from '../types';
+import { Actions, CustomEvents } from '../types';
 import App from './app';
 
 export type RouterState = {
@@ -92,8 +92,19 @@ class Router {
   }
 
   static push(action: Actions, params?: UrlParams, search?: RouterSearch): void {
+    const beforeRouterPushEvent = new CustomEvent(
+      CustomEvents.BEFOREROUTERPUSH,
+      {
+        detail: { action, params, search },
+        bubbles: true,
+      },
+    );
+    document.dispatchEvent(beforeRouterPushEvent);
+
     const route = Router.createLink(action, params, search);
+
     window.history.pushState(Router.createState(route), '', route);
+
     App.run();
   }
 

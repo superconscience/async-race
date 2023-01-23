@@ -17,7 +17,11 @@ class ConstructorItem<T extends ConstructorMode = 'create'> implements Component
   static readonly classes = {
     constructorItem: 'constructor-item',
     nameInput: 'constructor-item__input',
+    nameInputCreate: 'constructor-item__input_create',
+    nameInputUpdate: 'constructor-item__input_update',
     colorInput: 'constructor-item__color',
+    colorInputCreate: 'constructor-item__color_create',
+    colorInputUpdate: 'constructor-item__color_update',
     createBtn: 'constructor-item__create',
     updateBtn: 'constructor-item__update',
     cancelBtn: 'constructor-item__cancel',
@@ -58,8 +62,13 @@ class ConstructorItem<T extends ConstructorMode = 'create'> implements Component
     }
 
     $item.append($nameInput, $colorInput, isCreateMode ? $createBtn : $updateBtn);
-    if (!isCreateMode) {
+    if (isCreateMode) {
+      $nameInput.classList.add(ConstructorItem.classes.nameInputCreate);
+      $colorInput.classList.add(ConstructorItem.classes.colorInputCreate);
+    } else {
       $item.append($cancelBtn);
+      $nameInput.classList.add(ConstructorItem.classes.nameInputUpdate);
+      $colorInput.classList.add(ConstructorItem.classes.colorInputUpdate);
     }
 
     return $item;
