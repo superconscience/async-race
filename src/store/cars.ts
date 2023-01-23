@@ -4,6 +4,8 @@ import {
 } from '../types';
 
 class CarsStore {
+  raceAbortController = new AbortController();
+
   private _cars: Cars = [];
 
   allCars: Cars = [];
@@ -38,6 +40,11 @@ class CarsStore {
 
   get raceResults(): RaceResults {
     return this._raceResults;
+  }
+
+  abortRace(): void {
+    this.raceAbortController.abort();
+    this.raceAbortController = new AbortController();
   }
 
   addRacingCar(id: CarId): void {
@@ -75,6 +82,7 @@ class CarsStore {
   }
 
   resetRace(): void {
+    this.abortRace();
     this._raceResults = {};
     this.raceTimer = 0;
     this._racingCars = [];

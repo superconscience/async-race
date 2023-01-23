@@ -56,7 +56,8 @@ class CarModel {
   }
 
   async setEngine(id: CarId, status: SetEngineStatus): Promise<SetEngineResponseData> {
-    const engineData = this.client.setEngine(id, status);
+    const engineData = this.client.setEngine(
+      id, status, this.store.cars.raceAbortController.signal);
     if (status === EngineStatus.Started) {
       this.store.cars.addRacingCar(id);
     } else if (status === EngineStatus.Stopped) {

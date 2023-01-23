@@ -72,8 +72,12 @@ class ApiClient {
     return this.http.delete(`${Endpoints.Garage}/${id}`);
   }
 
-  setEngine(id: CarId, status: SetEngineStatus): Promise<SetEngineResponseData> {
-    return this.http.patch<SetEngineResponseData>(`${Endpoints.Engine}?id=${id}&status=${status}`);
+  setEngine(
+    id: CarId,
+    status: SetEngineStatus,
+    signal: AbortSignal,
+  ): Promise<SetEngineResponseData> {
+    return this.http.patch<SetEngineResponseData>(`${Endpoints.Engine}?id=${id}&status=${status}`, { signal });
   }
 
   drive(id: CarId): Promise<DriveResponseData> {

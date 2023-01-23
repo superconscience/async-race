@@ -269,7 +269,6 @@ class GarageItem implements Component {
 
   private stopCar(): void {
     const $car = this.getCarElement();
-
     if (!$car) {
       return;
     }

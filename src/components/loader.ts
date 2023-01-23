@@ -14,7 +14,10 @@ class Loader extends Component<HTMLDivElement> {
   }
 
   private create(): HTMLDivElement {
-    return $('div', 'loader');
+    const $loader = $('div', 'loader');
+    const $icon = $('span', 'loader__icon');
+    $loader.append($icon);
+    return $loader;
   }
 
   static toggle(toggle: boolean): void {

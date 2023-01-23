@@ -57,7 +57,7 @@ class Manager implements Component {
   }
 
   private createResetRaceButton(): HTMLButtonElement {
-    return new Button('Reset', Manager.classes.resetRace, this.resetRace).element();
+    return new Button('Reset', Manager.classes.resetRace, Manager.resetRace).element();
   }
 
   private createGenerateCarsButton(): HTMLButtonElement {
@@ -106,8 +106,9 @@ class Manager implements Component {
     );
   }
 
-  private async resetRace(): Promise<void> {
-    App.getStore().cars.resetRace();
+  static async resetRace(): Promise<void> {
+    const carsStore = App.getStore().cars;
+    carsStore.resetRace();
     await Promise.allSettled(
       Garage.garageItems.map((item) => item.resetCar()),
     );
