@@ -10,6 +10,7 @@
   background-image: url(assets/flag.svg);
   background-repeat: no-repeat;
   background-position-x: calc(100% - var(--flag-offset));
+  z-index: -1;
 
   @include media-lg-down {
     --flag-offset: 65px;
