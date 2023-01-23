@@ -6,6 +6,8 @@ export type RouterState = {
   url: string;
 };
 
+export type RouterSearch = Record<string, string>;
+
 export type UrlParams = (string | number)[];
 
 class Router {
@@ -18,6 +20,8 @@ class Router {
   protected action: string;
 
   protected params: string[];
+
+  protected search: RouterSearch = {};
 
   protected route: string;
 
@@ -41,6 +45,10 @@ class Router {
     return this.route;
   }
 
+  getSearch(): RouterSearch {
+    return this.search;
+  }
+
   constructor() {
     const { url } = window.history.state;
 
@@ -56,6 +64,8 @@ class Router {
     this.params = [];
 
     const uriParts = this.uri.split('?');
+
+    this.search = Router.parseSearch(uriParts[1]);
 
     // Get path like /action/param1/param2
     const path = uriParts[0];
@@ -81,8 +91,8 @@ class Router {
     return { url };
   }
 
-  static push(action: Actions, params?: UrlParams): void {
-    const route = Router.createLink(action, params);
+  static push(action: Actions, params?: UrlParams, search?: RouterSearch): void {
+    const route = Router.createLink(action, params, search);
     window.history.pushState(Router.createState(route), '', route);
     App.run();
   }
@@ -91,8 +101,39 @@ class Router {
     window.location.href = location;
   }
 
-  static createLink(action: Actions, params?: UrlParams): string {
-    return `/${action}/${params ? params.map(String).join('/') : ''}`;
+  static createLink(action: Actions, params?: UrlParams, search?: RouterSearch): string {
+    const paramsStr = params ? params.map(String).join('/') : '';
+    const searchStr = (search && Object.keys(search).length > 0) ? `?${Router.strinfifySearch(search)}` : '';
+    return `/${action}/${paramsStr}${searchStr}`;
+  }
+
+  static parseSearch(input: string): RouterSearch {
+    if (!input) {
+      return {};
+    }
+
+    const search: RouterSearch = {};
+    const parts = input.split('&');
+
+    parts.forEach((part) => {
+      if (part) {
+        const [key, value] = part.split('=');
+
+        if (key) {
+          if (value) {
+            search[key.slice(1)] = value;
+          } else {
+            search[key.slice(1)] = 'true';
+          }
+        }
+      }
+    });
+
+    return search;
+  }
+
+  static strinfifySearch(search: RouterSearch): string {
+    return Object.entries(search).map(([key, value]) => `_${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&');
   }
 }
 

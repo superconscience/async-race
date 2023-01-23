@@ -1,3 +1,4 @@
+import { WINNERS_PER_PAGE } from '../constants';
 import App from '../lib/app';
 import {
   Car, CarId, Winner, Winners,
@@ -8,7 +9,11 @@ class WinnersStore {
 
   winners: Winners = [];
 
+  allWinners: Winners = [];
+
   _isSavingWinners = false;
+
+  private totalCount = 0;
 
   get isSavingWinners(): boolean {
     return this._isSavingWinners;
@@ -25,6 +30,18 @@ class WinnersStore {
 
   getWinnerByCarId(id: CarId): Winner | undefined {
     return this.winners.find((x) => x.id === id);
+  }
+
+  getTotalPages(): number {
+    return Math.ceil(this.totalCount / WINNERS_PER_PAGE) || 1;
+  }
+
+  getTotalCount(): number {
+    return this.totalCount;
+  }
+
+  setTotalCount(value: number): void {
+    this.totalCount = value;
   }
 }
 

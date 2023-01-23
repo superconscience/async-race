@@ -1,11 +1,12 @@
 import App from '../lib/app';
 import { CarId, Component } from '../types';
 import {
-  $, createCar, isHTMLElementOfClass,
+  $, createCar, isHTMLButtonElementOfClass, isHTMLElementOfClass,
 } from '../utils/functions';
 import GarageView from '../views/garage';
 import Button from './button';
 import Garage from './garage';
+import GarageItem from './garage-item';
 import Loader from './loader';
 
 export type ConstructorMode = 'create' | 'update';
@@ -19,6 +20,7 @@ class ConstructorItem<T extends ConstructorMode = 'create'> implements Component
     colorInput: 'constructor-item__color',
     createBtn: 'constructor-item__create',
     updateBtn: 'constructor-item__update',
+    cancelBtn: 'constructor-item__cancel',
   };
 
   mode: ConstructorMode;
@@ -46,6 +48,7 @@ class ConstructorItem<T extends ConstructorMode = 'create'> implements Component
     const $colorInput = this.createColorPicker();
     const $createBtn = this.createCreateButton();
     const $updateBtn = this.createUpdateButton();
+    const $cancelBtn = this.createCancelButton();
 
     if (this.id) {
       const car = App.getStore().cars.carsMap[this.id];
@@ -55,12 +58,16 @@ class ConstructorItem<T extends ConstructorMode = 'create'> implements Component
     }
 
     $item.append($nameInput, $colorInput, isCreateMode ? $createBtn : $updateBtn);
+    if (!isCreateMode) {
+      $item.append($cancelBtn);
+    }
 
     return $item;
   }
 
   private createCarNameInput(): HTMLInputElement {
     const $input = $('input', ConstructorItem.classes.nameInput);
+    $input.placeholder = 'Enter Brand - Model';
     return $input;
   }
 
@@ -81,6 +88,11 @@ class ConstructorItem<T extends ConstructorMode = 'create'> implements Component
 
   private createUpdateButton(): HTMLButtonElement {
     const $button = new Button('Save', ConstructorItem.classes.updateBtn, this.updateButtonClickHandler);
+    return $button.element();
+  }
+
+  private createCancelButton(): HTMLButtonElement {
+    const $button = new Button('Cancel', ConstructorItem.classes.cancelBtn, this.cancelButtonClickHandler);
     return $button.element();
   }
 
@@ -134,6 +146,20 @@ class ConstructorItem<T extends ConstructorMode = 'create'> implements Component
     carsStore.updateCar(this.id, updatedCar);
     ConstructorItem.onCarUpdate();
     Loader.off();
+  };
+
+  private cancelButtonClickHandler: EventListener = (event) => {
+    const $target = event.target;
+
+    if (!(isHTMLButtonElementOfClass($target, ConstructorItem.classes.cancelBtn))) {
+      return;
+    }
+
+    const $garageItem = $target.closest(`.${GarageItem.classes.garageItem}`);
+
+    if ($garageItem) {
+      $garageItem.classList.remove(GarageItem.classes.garageItemUpdate);
+    }
   };
 
   static onCarCreate(): void {

@@ -1,0 +1,97 @@
+.winners {
+  padding: 0 80px;
+
+  @include media-lg-down {
+    padding: 0 40px;
+  }
+
+  @include media-md-down {
+    padding: 0 10px;
+  }
+}
+
+.winners__heading {
+  text-align: center;
+  font-style: italic;
+  text-transform: uppercase;
+  font-size: 3.5rem;
+  color: #1c3391;
+}
+
+.winners__page-heading {
+  text-align: right;
+}
+
+.winners-list {
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.winners-list__not-found {
+  text-align: center;
+  font-size: 3rem;
+}
+
+.winners-list__item {
+  display: flex;
+  align-items: center;
+  min-width: 480px;
+  width: 1000px;
+  max-width: 100%;
+  font-size: 1.8rem;
+
+  &:not(.winners-list__head-item) {
+    font-weight: 700;
+  }
+
+  .car {
+    position: relative;
+    left: -12px;
+    bottom: 0;
+    width: 75px;
+    height: 50px;
+  }
+
+  &:nth-child(2n + 1) {
+    background-color: #93a1da;
+  }
+}
+
+.winners-list__head-item {
+  font-size: 2rem;
+  background-color: black!important;
+  color: #ffffff;
+  padding: 10px 0;
+
+  .winners-list__number {
+    cursor: pointer;
+  }
+
+  .winners-list__wins {
+    cursor: pointer;
+  }
+
+  .winners-list__best-time {
+    cursor: pointer;
+  }
+}
+
+.winners-list__number {
+  width: 10%;
+  padding-left: 5px;
+}
+.winners-list__car {
+  width: 15%;
+}
+.winners-list__car-name {
+  width: 30%;
+}
+.winners-list__wins {
+  width: 20%;
+}
+.winners-list__best-time {
+  width: 25%;
+  padding-right: 5px;
+}

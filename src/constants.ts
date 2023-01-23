@@ -8,6 +8,9 @@ export const MAX_HEX = 16777215;
 // Limit of cars displayed per page
 export const CARS_PER_PAGE = 7;
 
+// Limit of winners displayed per page
+export const WINNERS_PER_PAGE = 10;
+
 export const CAR_BRANDS = [
   'Volvo', 'Volkswagen', 'Toyota', 'Ford', 'Mercedes-Benz', 'BMW', 'Audi', 'KIA', 'Renault', 'Peugeot',
   'Mitsubishi', 'Jeep', 'Lincoln', 'Ferrari',

@@ -1,3 +1,4 @@
+import App from '../lib/app';
 import Router from '../lib/router';
 import { Actions, Component } from '../types';
 import { $ } from '../utils/functions';
@@ -10,12 +11,27 @@ class Header implements Component {
 
   create(): HTMLElement {
     const $header = $('header', 'header');
-    const garagePage = GarageView.getPage();
-    const winnersPage = WinnersView.getPage();
-    const $garageButton = new Button('To Garage', '', () => { Router.push(Actions.Garage, garagePage ? [garagePage] : []); }).element();
-    const $winnersButton = new Button('To Winners', '', () => { Router.push(Actions.Winners, winnersPage ? [winnersPage] : []); }).element();
+    const $wrapper = $('div', 'navigation');
+    const btnClassName = 'navigation__button';
+    const btnClassNameActive = `${btnClassName}_active`;
+    const action = App.getRouter().getAction();
+    const $garageButton = new Button(
+      'Garage', `${btnClassName} ${action === Actions.Garage ? btnClassNameActive : ''}`, () => {
+        Router.push(Actions.Garage, [GarageView.stateHistory.current.page]);
+      },
+    ).element();
+    const $winnersButton = new Button(
+      'Winners', `${btnClassName} ${action === Actions.Winners ? btnClassNameActive : ''}`, () => {
+        Router.push(Actions.Winners, [WinnersView.stateHistory.current.page], {
+          sort: WinnersView.stateHistory.current.sort,
+          order: WinnersView.stateHistory.current.order,
+        });
+      },
+    ).element();
 
-    $header.append($garageButton, $winnersButton);
+    $wrapper.append($garageButton, $winnersButton);
+
+    $header.append($wrapper);
     return $header;
   }
 

@@ -1,9 +1,11 @@
+import { OrderParam, WinnersSortParam } from '../lib/api-client';
 import App from '../lib/app';
 import Controller from '../lib/controller';
 import CarModel from '../models/car';
 import WinnerModel from '../models/winner';
-import GarageView from '../views/garage';
-import WinnersView from '../views/winners';
+import { Actions } from '../types';
+import GarageView, { GarageViewState } from '../views/garage';
+import WinnersView, { WinnersViewState } from '../views/winners';
 
 class MainController extends Controller {
   private garageView: GarageView;
@@ -32,20 +34,48 @@ class MainController extends Controller {
 
   constructor() {
     super();
-    this.garageView = new GarageView(this.getPage());
-    this.winnersView = new WinnersView();
+    const action = App.getRouter().getAction();
+    const params = this.getParams();
+    const page = Number(params[0]);
+    let garageViewState: GarageViewState;
+    let winnersViewState: WinnersViewState;
+    const searchParams = App.getRouter().getSearch();
+    if (page) {
+      garageViewState = action === Actions.Garage ? { page } : GarageView.stateHistory.current;
+      winnersViewState = action === Actions.Winners
+        ? {
+          page,
+          sort: searchParams.sort as WinnersSortParam.Id,
+          order: searchParams.order as OrderParam.ASC,
+        }
+        : WinnersView.stateHistory.current;
+    } else {
+      garageViewState = GarageView.stateHistory.current;
+      winnersViewState = WinnersView.stateHistory.current;
+    }
+    this.garageView = new GarageView(garageViewState);
+    this.winnersView = new WinnersView(winnersViewState);
     this.carModel = new CarModel(App.getStore(), App.getApiClient());
-    this.winnerModel = new WinnerModel(App.getStore().winners, App.getApiClient());
+    this.winnerModel = new WinnerModel(
+      App.getStore().winners,
+      App.getApiClient(),
+    );
   }
 
   async garage(): Promise<void> {
-    await this.carModel.fetchCars(this.getPage());
-
+    await Promise.all([
+      await this.carModel.fetchCars(GarageView.getPage()),
+      await this.winnerModel.fetchAllWinners(),
+    ]);
     this.garageView.render();
-    console.log(App.getStore());
   }
 
-  winners(): void {
+  async winners(): Promise<void> {
+    await Promise.all([
+      await this.carModel.fetchAllCars(),
+      await this.winnerModel.fetchWinners(WinnersView.getPage(), App.getRouter().getSearch()),
+      await this.winnerModel.fetchAllWinners(),
+    ]);
     this.winnersView.render();
   }
 

@@ -1,7 +1,12 @@
 .track {
+  --bottom: -32px;
   position: absolute;
-  border-bottom: dashed 2px red;
-  bottom: -32px;
+  border-bottom: dashed 2px #eb4444;
+  bottom: var(--bottom);
   left: 0;
   width: 100%;
+
+  @include media-md-down {
+    --bottom: -52px;
+  }
 }

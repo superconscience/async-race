@@ -6,6 +6,8 @@ import {
 class CarsStore {
   private _cars: Cars = [];
 
+  allCars: Cars = [];
+
   private _racingCars: CarId[] = [];
 
   private _raceResults: RaceResults = {};
@@ -56,15 +58,15 @@ class CarsStore {
     return this._racingCars.length > 0;
   }
 
-  getTotalCount() {
+  getTotalCount(): number {
     return this.totalCount;
   }
 
-  getTotalPages() {
+  getTotalPages(): number {
     return Math.ceil(this.totalCount / CARS_PER_PAGE) || 1;
   }
 
-  setTotalCount(value: number) {
+  setTotalCount(value: number): void {
     this.totalCount = value;
   }
 

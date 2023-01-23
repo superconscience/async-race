@@ -1,6 +1,6 @@
 import { CARS_PER_PAGE } from '../constants';
 import App from '../lib/app';
-import { CarId, Component } from '../types';
+import { Actions, CarId, Component } from '../types';
 import { $, replaceWith } from '../utils/functions';
 import GarageView from '../views/garage';
 import GarageHeading from './garage-heading';
@@ -12,6 +12,7 @@ class GarageList implements Component<HTMLDivElement> {
 
   private static readonly classes = {
     garageList: 'garage-list',
+    notFound: 'garage-list__not-found',
     pageHeading: 'garage__page-heading',
     ListWrapper: 'garage__garage-list-wrapper',
     listItem: 'garage-list__item',
@@ -34,13 +35,23 @@ class GarageList implements Component<HTMLDivElement> {
     const $container = $('div', GarageList.classes.ListWrapper);
     const $pageHeading = this.createPageHeading();
     const $list = $('ul', GarageList.classes.garageList);
-    const $pagination = new Pagination(CARS_PER_PAGE).element();
+    const $notFound = $('p', GarageList.classes.notFound);
+    const $pagination = new Pagination(
+      CARS_PER_PAGE,
+      App.getStore().cars.getTotalCount(),
+      GarageView.getPage(),
+      Actions.Garage,
+    ).element();
 
-    $container.append($pageHeading, $pagination, $list);
-
-    cars.forEach(({ name, color, id }) => {
-      $list.append(this.createGarageListItem(name, color, id));
-    });
+    if (cars.length > 0) {
+      cars.forEach(({ name, color, id }) => {
+        $list.append(this.createGarageListItem(name, color, id));
+      });
+      $container.append($pageHeading, $pagination, $list);
+    } else {
+      $notFound.textContent = 'All garages are empty. Create a car.';
+      $container.append($notFound);
+    }
 
     return $container;
   }

@@ -3,7 +3,7 @@ abstract class View {
 
   protected $container = document.createDocumentFragment();
 
-  protected static page = 1;
+  protected static page: number;
 
   private name: string;
 

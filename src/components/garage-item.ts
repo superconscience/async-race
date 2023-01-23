@@ -31,7 +31,7 @@ class GarageItem implements Component {
 
   color: string;
 
-  private static readonly classes = {
+  static readonly classes = {
     garageItem: 'garage-item',
     garageItemUpdate: 'garage-item_update',
     car: 'garage-item__car',
@@ -304,7 +304,6 @@ class GarageItem implements Component {
 
   private async finish(): Promise<void> {
     const maybeWinResult = await App.getController().getCarModel().finish(this.id);
-    console.log({ maybeWinResult });
 
     if (maybeWinResult) {
       this.notifyWinner(maybeWinResult.car, maybeWinResult.time);
@@ -326,16 +325,8 @@ class GarageItem implements Component {
     this.toggleControlButton(ControlButtonType.Start, false);
   }
 
-  private disableStop(): void {
-    this.toggleControlButton(ControlButtonType.Stop, false);
-  }
-
   private enableStart(): void {
     this.toggleControlButton(ControlButtonType.Start, true);
-  }
-
-  private enableStop(): void {
-    this.toggleControlButton(ControlButtonType.Stop, true);
   }
 
   private notifyWinner(winner: CarType, result: number): void {

@@ -27,7 +27,7 @@
   display: none;
   justify-content: center;
   align-items: center;
-  z-index: 2000;
+  z-index: $popup-z-index;
   background-color: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(3px);
   opacity: 0;
@@ -43,8 +43,9 @@
 }
 
 .win-notification {
-  font-size: 40px;
+  font-size: 50px;
   font-weight: 700;
+  text-align: center;
 }
 
 .fire-text {
@@ -53,7 +54,6 @@
   .fire-text__content {
     position: relative;
     color: #ffeb3b;
-    // -webkit-box-reflect: below -120px linear-gradient(transparent, #000800);
     text-shadow: 0 0 10px #ff8c3b, 0 0 40px #ff8c3b, 0 0 80px #ff8c3b, 0 0 160px #ff8c3b, 0 0 240px #ff8c3b;
   }
 }

@@ -3,11 +3,16 @@ import Component from '../lib/component';
 import Router from '../lib/router';
 import { Actions } from '../types';
 import { $ } from '../utils/functions';
-import GarageView from '../views/garage';
 import Button from './button';
 
 class Pagination extends Component<HTMLUListElement> {
   limit: number;
+
+  count: number;
+
+  currentPage: number;
+
+  action: Actions;
 
   private $element: HTMLUListElement;
 
@@ -15,12 +20,16 @@ class Pagination extends Component<HTMLUListElement> {
     pagination: 'pagination',
     item: 'pagination__item',
     itemEmpty: 'pagination__item_empty',
+    itemActive: 'pagination__item_active',
     link: 'pagination__link',
   };
 
-  constructor(limit: number) {
+  constructor(limit: number, count: number, currentPage: number, action: Actions) {
     super();
     this.limit = limit;
+    this.count = count;
+    this.currentPage = currentPage;
+    this.action = action;
     this.$element = this.create();
   }
 
@@ -34,11 +43,10 @@ class Pagination extends Component<HTMLUListElement> {
 
   private createPagination(): HTMLUListElement {
     const $container = $('ul', Pagination.classes.pagination);
-    const listItemsCount = App.getStore().cars.getTotalCount();
-    const currentPage = GarageView.getPage();
+    const { currentPage } = this;
     const prevPage = currentPage - 1;
     const nextPage = currentPage + 1;
-    const pagesCount = Math.ceil(listItemsCount / this.limit) || 1;
+    const pagesCount = Math.ceil(this.count / this.limit) || 1;
     const pageNumbers = Array(pagesCount)
       .fill(0)
       .map((_, i) => i + 1)
@@ -46,8 +54,6 @@ class Pagination extends Component<HTMLUListElement> {
         Math.max(currentPage - 6, 0),
         currentPage > 6 ? currentPage + 4 : 10,
       );
-
-    console.log(currentPage, listItemsCount);
 
     const $prevItem = this.createPaginationItem(prevPage, pagesCount, '«');
     const $nextItem = this.createPaginationItem(nextPage, pagesCount, '»');
@@ -84,13 +90,19 @@ class Pagination extends Component<HTMLUListElement> {
     const $item = $('li', Pagination.classes.item);
     const isDisabled = page <= 0 || page > pagesCount;
     let className = Pagination.classes.link;
+
     if (isDisabled) {
       className += ' disabled';
     }
+
+    if (page === this.currentPage) {
+      $item.classList.add(Pagination.classes.itemActive);
+    }
+
     const $button = new Button(
       text, className, () => {
         if (!isDisabled) {
-          Router.push(Actions.Garage, [page]);
+          Router.push(this.action, [page], App.getRouter().getSearch());
         }
       },
     ).element();

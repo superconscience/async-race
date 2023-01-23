@@ -14,6 +14,10 @@ class Footer implements Component {
 
   create(): HTMLElement {
     const $footer = $('footer', 'footer');
+    $footer.innerHTML = `<div class="footer__wrapper"><p class="copyright">© Async Race 2023</p><ul class="footer__links">
+      <li class="footer__links-item"><a class="footer__link" href="https://github.com/superconscience"><span class="icon icon_github"></span></a></li>
+      <li class="footer__links-item"><a class="footer__link" href="https://rs.school/js/"><span class="icon icon_rsschool"></span></a></li>
+      </ul></div>`;
     return $footer;
   }
 }

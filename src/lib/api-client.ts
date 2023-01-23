@@ -1,8 +1,10 @@
+import { CARS_PER_PAGE, WINNERS_PER_PAGE } from '../constants';
 import {
   Car, CarId, Cars, CreateCarRequestData, CreateWinnerRequestData,
   EngineStatus, UpdateWinnerRequestData, Winner, Winners as WinnersType,
 } from '../types';
 import Http, { ResponseCallback } from './http';
+import Router, { RouterSearch } from './router';
 
 export enum Endpoints {
   Garage = 'garage',
@@ -25,6 +27,22 @@ export type DriveResponseData = {
   success: boolean;
 };
 
+export enum WinnersSortParam {
+  Id = 'id',
+  Wins = 'wins',
+  Time = 'time',
+}
+
+export enum OrderParam {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
+export type WinnersRequestParams = {
+  sort: WinnersSortParam,
+  order: OrderParam,
+};
+
 class ApiClient {
   private baseUrl = 'http://127.0.0.1:3000';
 
@@ -33,7 +51,7 @@ class ApiClient {
   getCars(page?: number, callback?: ResponseCallback): Promise<Cars> {
     let endpoint = `${Endpoints.Garage}`;
     if (page !== undefined) {
-      endpoint += `?_page=${page}&_limit=7`;
+      endpoint += `?_page=${page}&_limit=${CARS_PER_PAGE}`;
     }
     return this.http.get<Cars>(endpoint, undefined, callback);
   }
@@ -62,8 +80,21 @@ class ApiClient {
     return this.http.patch<DriveResponseData>(`${Endpoints.Engine}?id=${id}&status=${EngineStatus.drive}`);
   }
 
-  getWinners(): Promise<WinnersType> {
-    return this.http.get<WinnersType>(Endpoints.Winners);
+  getWinners(
+    page?: number,
+    callback?: ResponseCallback,
+    params?: RouterSearch,
+  ): Promise<WinnersType> {
+    let endpoint = `${Endpoints.Winners}`;
+    const paramsStr = params ? Router.strinfifySearch(params.sort === WinnersSortParam.Id ? {} : params) : '';
+
+    if (page !== undefined) {
+      endpoint += `?_page=${page}&_limit=${WINNERS_PER_PAGE}&${paramsStr}`;
+    } else {
+      endpoint += `?${paramsStr}`;
+    }
+
+    return this.http.get<WinnersType>(endpoint, undefined, callback);
   }
 
   createWinner(data: CreateWinnerRequestData): Promise<Winner> {
@@ -72,6 +103,10 @@ class ApiClient {
 
   updateWinner(id: CarId, data: UpdateWinnerRequestData): Promise<Winner> {
     return this.http.put<Winner>(`${Endpoints.Winners}/${id}`, data);
+  }
+
+  async deleteWinner(id: CarId) : Promise<void> {
+    await this.http.delete(`${Endpoints.Winners}/${id}`);
   }
 }
 

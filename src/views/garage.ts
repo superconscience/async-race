@@ -4,14 +4,33 @@ import View from '../lib/view';
 import Loader from '../components/loader';
 import Popup from '../components/popup';
 import StatusBox from '../components/status-box';
+import Footer from '../components/footer';
 
 export enum GarageViewStatus {
   Idle = 'Idle',
   SavingWinners = 'SavingWinners',
 }
 
+export type GarageViewState = {
+  page: number;
+};
+
+export type GarageViewStateHistory = {
+  prev: GarageViewState;
+  current: GarageViewState;
+};
+
 class GarageView extends View {
   private _status: GarageViewStatus = GarageViewStatus.Idle;
+
+  static stateHistory: GarageViewStateHistory = {
+    prev: {
+      page: 1,
+    },
+    current: {
+      page: 1,
+    },
+  };
 
   static readonly classes = {
     statusSavingWinners: 'status_saving-winners',
@@ -31,17 +50,18 @@ class GarageView extends View {
       GarageView.classes.statusSavingWinners, value === GarageViewStatus.SavingWinners);
   }
 
-  constructor(page?: number) {
+  constructor(state: GarageViewState) {
     super('Garage');
-    if (page !== undefined) {
-      GarageView.page = page;
-    }
+    GarageView.stateHistory.prev = GarageView.stateHistory.current;
+    GarageView.stateHistory.current = state;
+    GarageView.page = GarageView.stateHistory.current.page;
   }
 
   build(): void {
     this.$container.append(
       new Header().element(),
       new GarageMain().element(),
+      new Footer().element(),
       new Loader().element(),
       new Popup().element(),
       new StatusBox().element(),
