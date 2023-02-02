@@ -1,0 +1,33 @@
+.header {
+  position: relative;
+  z-index: $header-z-index;
+  height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  background-color: rgb(147 161 218);
+}
+
+.navigation {
+  width: $container-width;
+  padding: 0 100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navigation__button {
+  width: $header-padding-x;
+  border-radius: 9px;
+  font-size: 2rem;
+  font-weight: 700;
+  background-color: transparent;
+  border-color: #000000;
+
+  &_active {
+    background: #000000;
+    color: white;
+    font-weight: 400;
+  }
+}

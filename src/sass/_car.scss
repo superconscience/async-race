@@ -1,0 +1,56 @@
+@keyframes drive {
+  0% {
+    left: var(--left);
+  }
+
+  100% {
+    left: calc(100% - var(--width));
+  }
+}
+
+.car {
+  --left: #{$car-initial-left};
+  --width: #{$car-width};
+  --bottom: -60px;
+  position: absolute;
+  width: var(--width);
+  height: $car-height;
+  left: var(--left);
+  bottom: var(--bottom);
+
+  @include media-lg-down {
+    --width: calc(#{$car-width} * 0.75);
+    --bottom: -64px;
+  }
+
+  @include media-md-down {
+    --width: calc(#{$car-width} * 0.6);
+    --left: 0;
+    --bottom: -85px;
+  }
+}
+
+.garage-item {
+  &.drive {
+    .car {
+      animation-name: drive;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+    }
+
+    &.stop {
+      .car {
+        animation-play-state: paused;
+      }
+    }
+  }
+}
+
+.car-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.object-svg > * {
+  fill: inherit;
+}

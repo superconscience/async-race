@@ -1,0 +1,32 @@
+.constructor-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  >* {
+    height: 30px;
+  }
+}
+
+.constructor-item__input {
+  flex-grow: 2;
+  color: #374fa5;
+  font-weight: 700;
+
+  &::placeholder {
+    color: lighten(#374fa5, 30);
+  }
+}
+
+.constructor-item__color {
+  flex-basis: $header-padding-x;
+  cursor: pointer;
+}
+
+.constructor-item__create {
+  flex-basis: $header-padding-x;
+}
+
+.constructor-item__cancel {
+  border-right: solid 1px rgb(185, 188, 200);
+}

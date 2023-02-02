@@ -1,0 +1,31 @@
+html {
+  font-size: 10px;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  font-size: 1.6rem;
+  background-color: rgb(185 188 200);
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+button:not(.start-car, .stop-car) {
+  height: 30px;
+}
+
+button {
+  cursor: pointer;
+  border-color: transparent;
+}
+
+#root {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  justify-content: space-between;
+}

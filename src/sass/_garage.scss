@@ -1,0 +1,140 @@
+.garage {
+  padding: 0 80px;
+
+  @include media-lg-down {
+    padding: 0 40px;
+  }
+
+  @include media-md-down {
+    padding: 0 10px;
+  }
+}
+
+.garage__heading {
+  text-align: center;
+  font-style: italic;
+  text-transform: uppercase;
+  font-size: 3.5rem;
+  color: #1c3391;
+}
+
+.garage__page-heading {
+  text-align: right;
+}
+
+.garage-list {
+  padding-top: 20px;
+}
+
+.garage-list__not-found {
+  text-align: center;
+  font-size: 3rem;
+}
+
+.garage-item {
+  position: relative;
+  margin-bottom: 60px;
+
+  @include media-md-down {
+    margin-bottom: 70px;
+  }
+
+  &_update {
+    .garage-item__update-wrapper {
+      display: block;
+    }
+
+    .garage-item__btn-show-update-car {
+      display: none;
+    }
+  }
+
+  &.drive {
+    .garage-item__btn-start {
+      @extend %disabled;
+    }
+  }
+
+  .garage-item__btn-stop:not(.garage-item.drive .garage-item__btn-stop) {
+    @extend %disabled;
+    color: #616161;
+    font-weight: 400;
+  }
+}
+
+.garage-item__top {
+  display: flex;
+  align-items: center;
+  height: 30px;
+
+  @include media-md-down {
+    position: relative;
+    justify-content: flex-end;
+  }
+}
+
+.garage-item__update-wrapper {
+  display: none;
+
+  @include media-md-down {
+    position: absolute;
+    top: 0;
+    right: 75px;
+    z-index: 2;
+  }
+}
+
+.garage-item__bottom {
+  position: relative;
+  top: 20px;
+  z-index: 2;
+}
+
+.garage-item__car-name {
+  margin: 0 0 0 10px;
+
+  @include media-md-down {
+    position: absolute;
+    left: 0;
+    margin: 0;
+  }
+}
+
+.garage-item__btn-start {
+  margin-right: 5px;
+  font-style: italic;
+  font-weight: 700;
+  background-color: green;
+  color: #ffffff;
+}
+.garage-item__btn-stop {
+  opacity: 1 !important;
+  color: rgb(29, 29, 185);
+  font-weight: 700;
+}
+
+.garage-item__btn-start,
+.garage-item__btn-stop {
+  border-radius: 15px;
+}
+
+.garage-item__btn-show-update-car {
+  font-weight: 700;
+  border-right: solid 1px rgb(185, 188, 200);
+}
+
+.constructor-item__update {
+  font-weight: 700;
+  border-right: solid 1px rgb(185, 188, 200);
+}
+
+.garage-item__btn-remove-car {
+  color: #ff3030;
+  font-weight: 700;
+}
+
+.garage-item__update-wrapper {
+  .constructor-item__color {
+    width: $header-padding-x;
+  }
+}

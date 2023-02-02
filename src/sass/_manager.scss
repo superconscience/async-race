@@ -1,0 +1,72 @@
+.manager {
+  position: relative;
+  z-index: $manager-z-index;
+
+  margin: 20px auto;
+  max-width: $container-width;
+
+  @include media-sm-down {
+    padding: 0 10px;
+  }
+
+  &_race-started {
+    .start-race {
+      @extend %disabled;
+    }
+
+    .reset-race {
+      @extend %not-disabled;
+    }
+  }
+
+  &_solo-race-started {
+    .start-race {
+      @extend %disabled;
+    }
+
+    .reset-race {
+      @extend %not-disabled;
+    }
+  }
+
+  &_solo-race-finished {
+    .start-race {
+      @extend %disabled;
+    }
+
+    .reset-race {
+      @extend %not-disabled;
+    }
+  }
+
+  .start-race,
+  .reset-race {
+    width: $header-padding-x;
+  }
+
+  .generate-cars {
+    $width: 2 * $header-padding-x;
+    width: $width;
+    margin-left: calc(#{$container-width} - 2 * #{$header-padding-x} - #{$width});
+  }
+}
+
+.start-race {
+  @extend %not-disabled;
+}
+
+.reset-race {
+  @extend %disabled;
+}
+
+.status_saving-winners {
+  .start-race {
+    @extend %disabled;
+  }
+}
+
+.manager__control-panel {
+  padding: 10px 0 0;
+  display: flex;
+  align-items: center;
+}
