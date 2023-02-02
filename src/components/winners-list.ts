@@ -111,23 +111,11 @@ class WinnersList implements Component<HTMLDivElement> {
     let bestTimeOrderIcon = ' ';
 
     if (sortParam === WinnersSortParam.Id) {
-      if (orderParam === OrderParam.ASC) {
-        numberOrderIcon += orderAscIcon;
-      } else {
-        numberOrderIcon += orderDescIcon;
-      }
+      numberOrderIcon += orderParam === OrderParam.ASC ? orderAscIcon : orderDescIcon;
     } else if (sortParam === WinnersSortParam.Wins) {
-      if (orderParam === OrderParam.ASC) {
-        winsOrderIcon += orderAscIcon;
-      } else {
-        winsOrderIcon += orderDescIcon;
-      }
+      winsOrderIcon += orderParam === OrderParam.ASC ? orderAscIcon : orderDescIcon;
     } else if (sortParam === WinnersSortParam.Time) {
-      if (orderParam === OrderParam.ASC) {
-        bestTimeOrderIcon += orderAscIcon;
-      } else {
-        bestTimeOrderIcon += orderDescIcon;
-      }
+      bestTimeOrderIcon += orderParam === OrderParam.ASC ? orderAscIcon : orderDescIcon;
     }
 
     $container.innerHTML = `<div class="${WinnersList.classes.listItemNumber}">#${numberOrderIcon}</div>
@@ -137,6 +125,12 @@ class WinnersList implements Component<HTMLDivElement> {
       <div class="${WinnersList.classes.listItemBestTime}">Best Time (seconds)${bestTimeOrderIcon}</div>
     `;
 
+    this.bindSortEvents($container);
+
+    return $container;
+  }
+
+  private bindSortEvents($container: HTMLLIElement): void {
     const $number = $container.querySelector<HTMLElement>(`.${WinnersList.classes.listItemNumber}`);
     const $wins = $container.querySelector<HTMLElement>(`.${WinnersList.classes.listItemWins}`);
     const $bestTime = $container.querySelector<HTMLElement>(`.${WinnersList.classes.listItemBestTime}`);
@@ -152,8 +146,6 @@ class WinnersList implements Component<HTMLDivElement> {
     if ($bestTime) {
       $bestTime.addEventListener('click', this.createSortClickHandler(WinnersSortParam.Time));
     }
-
-    return $container;
   }
 
   private createPageHeading(): HTMLHeadingElement {

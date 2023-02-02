@@ -12,7 +12,7 @@ const defaultRoute = Router.createLink(Actions.Garage);
 bindEvents();
 
 async function main() {
-  await App.run();
+  App.run();
 }
 
 window.onpopstate = (event) => {

@@ -1,4 +1,3 @@
-import { v4 as uuid } from 'uuid';
 import { CarId, CreateCarRequestData, Winner } from '../types';
 import { DatasetHelper } from './types';
 import {
@@ -33,8 +32,6 @@ export const bem = (
   },
   block,
 });
-
-export const generateId = () => uuid();
 
 export const createCar = (name: string, color: string): CreateCarRequestData => ({
   name,

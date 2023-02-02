@@ -6,7 +6,7 @@ import {
 class CarsStore {
   raceAbortController = new AbortController();
 
-  private _cars: Cars = [];
+  cars: Cars = [];
 
   allCars: Cars = [];
 
@@ -22,16 +22,8 @@ class CarsStore {
 
   raceStatus: RaceStatus = RaceStatus.Idle;
 
-  get cars(): Cars {
-    return this._cars;
-  }
-
-  set cars(value: Cars) {
-    this._cars = value;
-  }
-
   get carsMap(): CarsMap {
-    return Object.fromEntries(this._cars.map((car) => [car.id, car]));
+    return Object.fromEntries(this.cars.map((car) => [car.id, car]));
   }
 
   get racingCars(): CarId[] {

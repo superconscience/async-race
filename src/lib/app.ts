@@ -29,9 +29,9 @@ class App {
     return App.apiClient;
   }
 
-  static async run(): Promise<void> {
+  static run(): void {
     App.router = new Router();
-    App.store = new Store();
+    App.store = Store.getInstance();
     App.apiClient = new ApiClient();
     App.controller = new MainController();
 

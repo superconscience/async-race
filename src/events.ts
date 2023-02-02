@@ -6,6 +6,32 @@ import App from './lib/app';
 import { Actions, CustomEvents } from './types';
 import GarageView from './views/garage';
 
+function storeGarageItemUpdateEditorState($elem: HTMLElement): void {
+  const { carId } = $elem.dataset;
+  if (carId !== undefined) {
+    const toggle = $elem.classList.contains(
+      GarageItem.classes.garageItemUpdate,
+    );
+    const $nameInput = $elem.querySelector<HTMLInputElement>(
+      `.${ConstructorItem.classes.nameInputUpdate}`,
+    );
+    const $colorInput = $elem.querySelector<HTMLInputElement>(
+      `.${ConstructorItem.classes.colorInputUpdate}`,
+    );
+
+    if ($nameInput && $colorInput) {
+      if (!GarageView.updateEditorsState) {
+        GarageView.updateEditorsState = {};
+      }
+      GarageView.updateEditorsState[carId] = {
+        name: $nameInput.value,
+        color: $colorInput.value,
+        toggle,
+      };
+    }
+  }
+}
+
 function storeGarageState(): void {
   const currentAction = App.getRouter().getAction();
   if (currentAction === Actions.Garage) {
@@ -26,29 +52,7 @@ function storeGarageState(): void {
         `.${GarageItem.classes.garageItem}`,
       ),
     ].forEach(($elem) => {
-      const { carId } = $elem.dataset;
-      if (carId !== undefined) {
-        const toggle = $elem.classList.contains(
-          GarageItem.classes.garageItemUpdate,
-        );
-        const $nameInput = $elem.querySelector<HTMLInputElement>(
-          `.${ConstructorItem.classes.nameInputUpdate}`,
-        );
-        const $colorInput = $elem.querySelector<HTMLInputElement>(
-          `.${ConstructorItem.classes.colorInputUpdate}`,
-        );
-
-        if ($nameInput && $colorInput) {
-          if (!GarageView.updateEditorsState) {
-            GarageView.updateEditorsState = {};
-          }
-          GarageView.updateEditorsState[carId] = {
-            name: $nameInput.value,
-            color: $colorInput.value,
-            toggle,
-          };
-        }
-      }
+      storeGarageItemUpdateEditorState($elem);
     });
   }
 }
